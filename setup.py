@@ -10,7 +10,7 @@ setup(
     name="adzuna_api",
     version="0.1.0",
     author="Omar Moreno",
-    description="A python module to make it easier to use Adzuna API",
+    description="A Python module to make it easier to use Adzuna API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/moreno-omar/adzuna_api",

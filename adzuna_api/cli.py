@@ -121,8 +121,8 @@ def main(country, category, results_per_page, min_salary, max_salary, page, outp
     display_df = df.head(5)
     
     # Format the output for terminal display
-    for idx, row in display_df.iterrows():
-        click.echo(f"\nJob {idx + 1}:")
+    for job_num, (idx, row) in enumerate(display_df.iterrows(), start=1):
+        click.echo(f"\nJob {job_num}:")
         for col in display_df.columns:
             value = row[col]
             # Truncate long values
