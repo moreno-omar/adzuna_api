@@ -92,17 +92,17 @@ class AdzunaClient:
             columns_to_keep = []
             if "title" in df.columns:
                 columns_to_keep.append("title")
-            if "company" in df.columns and "display_name" in df["company"].iloc[0]:
+            if "company" in df.columns and len(df) > 0 and isinstance(df["company"].iloc[0], dict):
                 df["company_name"] = df["company"].apply(
                     lambda x: x.get("display_name", "") if isinstance(x, dict) else ""
                 )
                 columns_to_keep.append("company_name")
-            if "location" in df.columns and "display_name" in df["location"].iloc[0]:
+            if "location" in df.columns and len(df) > 0 and isinstance(df["location"].iloc[0], dict):
                 df["location_name"] = df["location"].apply(
                     lambda x: x.get("display_name", "") if isinstance(x, dict) else ""
                 )
                 columns_to_keep.append("location_name")
-            if "category" in df.columns and "label" in df["category"].iloc[0]:
+            if "category" in df.columns and len(df) > 0 and isinstance(df["category"].iloc[0], dict):
                 df["category_name"] = df["category"].apply(
                     lambda x: x.get("label", "") if isinstance(x, dict) else ""
                 )
