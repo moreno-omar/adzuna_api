@@ -87,41 +87,9 @@ class AdzunaClient:
             
             # Convert to DataFrame
             df = pd.DataFrame(results)
-            
-            # Select and rename useful columns
-            columns_to_keep = []
-            if "title" in df.columns:
-                columns_to_keep.append("title")
-            if "company" in df.columns and len(df) > 0 and isinstance(df["company"].iloc[0], dict):
-                df["company_name"] = df["company"].apply(
-                    lambda x: x.get("display_name", "") if isinstance(x, dict) else ""
-                )
-                columns_to_keep.append("company_name")
-            if "location" in df.columns and len(df) > 0 and isinstance(df["location"].iloc[0], dict):
-                df["location_name"] = df["location"].apply(
-                    lambda x: x.get("display_name", "") if isinstance(x, dict) else ""
-                )
-                columns_to_keep.append("location_name")
-            if "category" in df.columns and len(df) > 0 and isinstance(df["category"].iloc[0], dict):
-                df["category_name"] = df["category"].apply(
-                    lambda x: x.get("label", "") if isinstance(x, dict) else ""
-                )
-                columns_to_keep.append("category_name")
-            if "salary_min" in df.columns:
-                columns_to_keep.append("salary_min")
-            if "salary_max" in df.columns:
-                columns_to_keep.append("salary_max")
-            if "description" in df.columns:
-                columns_to_keep.append("description")
-            if "redirect_url" in df.columns:
-                columns_to_keep.append("redirect_url")
-            
-            # Return only the selected columns that exist
-            columns_to_keep = [col for col in columns_to_keep if col in df.columns]
-            if columns_to_keep:
-                return df[columns_to_keep]
-            else:
-                return df
+
+            # Select and normalize useful columns
+            return self._select_columns(df)
             
         except requests.exceptions.RequestException as e:
             print(f"Error making API request: {e}")
@@ -142,3 +110,20 @@ class AdzunaClient:
         """
         df.to_csv(filename, index=False)
         return filename
+
+    def _select_columns(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Select and normalize useful columns from job search results."""
+        normalized = pd.json_normalize(df.to_dict(orient="records"))
+        columns_to_keep = [
+            "title",
+            "company.display_name",
+            "location.display_name",
+            "category.label",
+            "salary_min",
+            "salary_max",
+            "description",
+            "redirect_url",
+        ]
+        return normalized[columns_to_keep]
+
+
